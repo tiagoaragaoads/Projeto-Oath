@@ -1,0 +1,360 @@
+# Antigo gerador de OATH'S
+'''
+# SERÁ SUBSTITUIDO POR GERAR_OATHS, USAREI UMA FUNÇÃO SEPARADA SO PARA GERAR OS OATHS
+# EM VEZ DE UMA FUNÇÃO QUE COLETE OS DADOS, GERE E EXIBA, IREI SEPARAR ESSE PROCESSO CADA
+# UM SEM SUA DETERMINADA FUNÇÃO:
+# NÃO IREI APAGAR ESSE ARQUIVO. USAREI COMO UM BACKUP PARA CASO DE MERDA NA NOVA FUNCIONALIDADE
+
+# Importações de bibliotecas:
+import os
+import time
+import random
+# Importações gerais:
+from Gerar_Nomes import Gerar_Nomes_Random
+from Regras_dados import Tiercomum, Tierslenda
+from Evolucao_Oath import evo_oath
+from Probabilidades import valores, peso, valoreslend, pesolend, limite_maxatri, limite_minatri
+from Dados_importantes import vantagens, estilos, tipos
+
+# Funções Úteis:
+def limpar():
+    if os.name == 'nt':  # Windows
+        os.system('cls')
+
+# Geração de Oath's Lendários:
+def Gerar_Lend():
+    
+    limite = 0
+    tier = 0
+    lendario = {'Força': 0, 'Destreza': 0, 'Poder Mágico': 0, 'Durabilidade': 0, 'Foco': 0}
+
+    # Converte as chaves dos dicionários em LISTA para sorteio com random.choice:
+    vant = list(vantagens.keys())
+    est = list(estilos.keys())
+    
+    # Amostragem:
+    limpar()
+    print("=" * 50)
+    print("🔮 Bem-vindo ao Gerador de Oaths Lendarios! 🔮")
+    print("=" * 50)
+    Tierslenda()
+    
+    while True:
+    # Usuário irá escolher agora dentro da função Gerar_Oath se quer eles aleatórios ou fixos.
+        print("=" * 50)
+        print("1. 🔮 Gerador Aleatório! 🔮")
+        print("2. 🔮 Gerador Específico! 🔮")
+        print("=" * 50)
+
+        try:
+            e = int(input(">>> "))
+
+            # Fazendo tratamento para caso a escolha do usuário seja incorreta:
+            if e < 1 or e > 2:
+                print("Opção inválida! Digite uma opção válida!")
+                input("Precione ENTER para voltar para o menu ...")
+                limpar()
+                continue  
+
+            # Opção de geração aleatória:
+            if e == 1:
+                while True:
+                    try:
+                        limite = int(input("✨ Quantos Oath's lendarios você gostaria de gerar? (Digite um número) --> "))
+                        break
+                    except ValueError:
+                        print("Valor inválido! Digite uma opção válida!")
+
+            # Opção de geração específica:
+            elif e == 2:
+                while True:
+                    try:
+                        tier = int(input("\nQual o tier do Oath Lendario que você quer gerar? Ex.: 1 seria Branco --> "))
+                        limite = int(input("✨ Quantos Oath's você gostaria de gerar? (Digite um número) --> "))
+                        break
+                    except ValueError:
+                        print("Valor inválido! Digite uma opção válida!")
+
+            break
+
+        except ValueError:
+            print("Entrada inválida! Por favor, digite um número.")
+            limpar()
+
+    
+    # Inicio:
+    for comeco in range(limite):
+        
+        # Caso tenha escolhido 1 la em cima:
+        if e == 1:
+            tier = random.randint(6,8)
+        
+        # Sorteia uma vantagem, uma natureza e um tipo para o Oath:
+        vantsort = random.choice(vant)
+        estsort = random.choice(est)
+        tiposort = random.choice(tipos)
+        
+        # Sorteia se é ou não é Shiny (em, hãm? é ou não é?):
+        if random.random() < 0.05:
+            shiny = 1
+        else:
+            shiny = 0
+
+        # Sorteia tipos adicionais com 40% de chance:
+        if random.random() < 0.4:
+            restypes = [tipo for tipo in tipos if tipo != tiposort]
+            # Corrigindo para que ele não escolha um tipo que o Oath já tenha:
+            sectipos = random.choice(restypes) if restypes else None 
+        # Caso o sorteio nao der os 40% ele aderir valor Nulo a sectipos:
+        else:
+            sectipos = None
+            
+        # Definindo os atributos de forma aleatoria do Tier do Oath escolhido:
+        for lendatri in lendario.keys():
+            dado = random.choices(valoreslend[tier], pesolend[tier])[0]
+            lendario[lendatri] = dado
+
+        # Define os Pv's baseados no Tier:
+        if tier == 6:
+            Pv = random.randint(6,7)
+        elif tier == 7:
+            Pv = random.randint(6,8)
+        else:
+            Pv = random.randint(7,9)
+            
+        # Define os pontos de vida totais do Oath Lendário:
+        Pvtotal = Pv + lendario["Durabilidade"]
+        
+        nome, sexo = Gerar_Nomes_Random()
+        
+        # Exibição do Oath lendário:
+        print("=" * 50)
+        print(f"🌟 Resultado da Geração do Oath {comeco+1} 🌟")
+        print("=" * 50)
+        print(f"🌟Nome: {nome}🌟")
+        print(F"⚧ Sexo: {sexo}")
+        print(f"🎯 Seu TIER foi: {tier}")
+        print("=" * 50)
+        print("✨ Atributos do Oath:")
+        print("=" * 50)
+        
+        # Caso o Oath sejá shiny:
+        if shiny == 1:
+            print("🌟✨🌟✨ Seu Oath é um Shiny 🌟✨🌟✨")
+            print("=" * 50)
+            Pvtotal+=1
+        
+        #Exibição dos Atributos:
+        for nm in lendario:
+            distribuido = '•' * lendario[nm]
+            print(f"🔹 {nm}: {distribuido}")
+        
+        # Demonstra os dados restantes (Pv's, Tipos, Natureza e Vantagens):
+        if shiny == 0:
+            print(F"❤️ Pontos de Vida ❤️ : {Pvtotal} = {Pv} + {lendario['Durabilidade']}")
+        else: # Caso seja shiny recebe esses dados adicionais:
+            print(F"❤️ Pontos de Vida ❤️ : {Pvtotal} = {Pv} + {lendario['Durabilidade']} + 1 (Shinys recebem este adicional!)")
+        
+        print(F"Def. Fisica 🛡️🛡️ : {lendario['Durabilidade']}")
+        print(F"Def. Mágica ✨🛡️ : {lendario['Foco']}")
+        
+        print("🎯 Vantagens 🎯")
+        print(F"{vantsort}: {vantagens[vantsort]}")
+        
+        print("🔥💧🌿Tipo🌿💧🔥")
+        print(F"Tipagem: {tiposort}", end=" ")
+        if sectipos:
+            print(F" e {sectipos}")
+        else:
+            print()
+        
+        print("⚔️  Estilo de Combate  ⚔️")
+        print(F"{estsort}: {estilos[estsort]}")
+        print("\n" + "=" * 50 + "\n")
+
+        #Garante que o shiny caso seja sorteado resete seu resultado para o próximo sorteio:
+        shiny = 0
+    return tier
+
+# Geração de Oath's Comuns:
+def Gerar_Oath():
+    
+    # Variaveis:
+    limite = 0
+    tier = 0
+    atri = {'Força': 0, 'Destreza': 0, 'Poder Mágico': 0, 'Durabilidade': 0, 'Foco': 0}
+    maxatri = {'Força': 0, 'Destreza': 0, 'Poder Mágico': 0, 'Durabilidade': 0, 'Foco': 0}
+    e = 0
+    
+    # Converte as chaves dos dicionários em LISTA para sorteio com random.choice:
+    vant = list(vantagens.keys())
+    est = list(estilos.keys())
+    
+    # Amostragem:
+    limpar()
+    print("=" * 50)
+    print("🔮 Bem-vindo ao Gerador de Oaths! 🔮")
+    print("=" * 50)
+    print("\n")
+    Tiercomum()
+    
+    while True:
+    # Usuário irá escolher agora dentro da função Gerar_Oath se quer eles aleatórios ou fixos.
+        print("=" * 50)
+        print("1. 🔮 Gerador Aleatório! 🔮")
+        print("2. 🔮 Gerador Específico! 🔮")
+        print("=" * 50)
+
+        try:
+            e = int(input(">>> "))
+
+            # Fazendo tratamento para caso a escolha do usuário seja incorreta:
+            if e < 1 or e > 2:
+                print("Opção inválida! Digite uma opção válida!")
+                input("Precione ENTER para voltar para o menu ...")
+                limpar()
+                continue  
+
+            # Opção de geração aleatória:
+            if e == 1:
+                while True:
+                    try:
+                        limite = int(input("✨ Quantos Oath's você gostaria de gerar? (Digite um número) --> "))
+                        break
+                    except ValueError:
+                        print("Valor inválido! Digite uma opção válida!")
+
+            # Opção de geração específica:
+            elif e == 2:
+                while True:
+                    try:
+                        tier = int(input("\nQual o tier do oath que você quer gerar? Ex.: 1 seria Branco --> "))
+                        limite = int(input("✨ Quantos Oath's você gostaria de gerar? (Digite um número) --> "))
+                        break
+                    except ValueError:
+                        print("Valor inválido! Digite uma opção válida!")
+
+            break
+
+        except ValueError:
+            print("Digitação inválida! Por favor, digite corretamente!")
+            time.sleep(1)
+            limpar()
+
+    # Inicio:
+    for comeco in range(limite):
+        
+        # Caso tenha escolhido aleatorio lá em cima:
+        if e == 1:
+            tier = random.randint(1,5)
+        
+        # Sorteia uma vantagem, uma natureza e um tipo para o Oath:
+        vantsort = random.choice(vant)
+        estsort = random.choice(est)
+        tiposort = random.choice(tipos)
+        
+        # Sorteia se é ou não é Shiny (em, hãm? é ou não é?):
+        if random.random() < 0.05:
+            shiny = 1
+        else:
+            shiny = 0
+
+        # Sorteia tipos adicionais com 40% de chance:
+        if random.random() < 0.4:
+            restypes = [tipo for tipo in tipos if tipo != tiposort]
+            # Corrigindo para que ele não escolha um tipo que o Oath já tenha:
+            sectipos = random.choice(restypes) if restypes else None 
+        # Caso o sorteio nao der os 40% ele aderir valor Nulo a sectipos:
+        else:
+            sectipos = None
+            
+        # Definindo os atributos maximos de forma aleatoria do Tier do Oath escolhido:
+        while True:
+            soma=0
+            for attr in maxatri.keys():
+                dado = random.choices(valores[tier], peso[tier])[0]
+                maxatri[attr] = dado
+                soma += maxatri[attr]
+            total = soma # Salva para mostrar o total de pontos no final.
+            # Tratamento fazendo os Oaths não passarem do limite para nao ter Oath's com varios atributos altos:
+            if limite_minatri[tier] <= soma <= limite_maxatri[tier]:
+                break
+            
+        # Distribuição dos Atributos, com tratamento para determinados valores:
+        for attr in maxatri:
+            if maxatri[attr] == 4:
+                atri[attr] = 2
+            elif maxatri[attr] == 7:
+                atri[attr] = 3
+            elif maxatri[attr] == 8:
+                atri[attr] = 4
+            elif maxatri[attr] == 9:
+                atri[attr] = 5
+            else:
+                atri[attr] = max(maxatri[attr] - 3, 1)
+
+        # Define os Pv's baseados no Tier:
+        if tier == 1:
+            Pv = random.randint(2, 3)
+        elif tier == 2:
+            Pv = random.randint(3, 4)
+        elif tier == 3:
+            Pv = random.randint(3, 4)
+        elif tier == 4:
+            Pv = random.randint(4, 5)
+        else:
+            Pv = random.randint(5, 6)
+        
+        # Define os Pontos de Vida totais do Oath:
+        Pvtotal = Pv + atri['Durabilidade']
+        
+        # Pegando o nome e o sexo do oath da função Gerar_Nomes_Random:
+        nome, sexo = Gerar_Nomes_Random()
+       
+        # Exibição do Oath:
+        print("=" * 50)
+        print(f"🌟 Resultado da Geração do Oath {comeco+1} 🌟")
+        print("=" * 50)
+        print(f"🌟Nome: {nome}🌟")
+        print(F"⚧ Sexo: {sexo}")
+        print(f"🎯 Seu TIER foi: {tier}\nTotal de Pontos: {total}")
+        print("=" * 50)
+        print("✨ Atributos do Oath:")
+        print("=" * 50)
+        
+        # Caso o Oath sejá shiny:
+        if shiny == 1:
+            print("🌟✨🌟✨ Seu Oath é um Shiny 🌟✨🌟✨")
+            print("=" * 50)
+            Pvtotal+=1
+        
+        # Demonstra os atributos dos Oath's em bolinhas:
+        for nm in maxatri:
+            distribuido = '•' * atri[nm]
+            distribuir = 'o' * (maxatri[nm] - atri[nm]) 
+            print(f"🔹 {nm}: {distribuido}{distribuir}")
+               
+        # Demonstra os dados restantes (Pv's, Tipos, Natureza e Vantagens):
+        if shiny == 0:
+            print(F"❤️ Pontos de Vida ❤️ : {Pvtotal} = {Pv} + {atri['Durabilidade']}")
+        else: # Caso seja shiny recebe esses dados adicionais:
+            print(F"❤️ Pontos de Vida ❤️ : {Pvtotal} = {Pv} + {atri['Durabilidade']} + 1 (Shinys recebem este adicional!)")
+        # Adicionar aqui >>> Amostragem dos PM's (Pontos de Magia)
+        print(F"Def. Fisica 🛡️🛡️ : {atri['Durabilidade']}")
+        print(F"Def. Mágica ✨🛡️ : {atri['Foco']}")
+        print("🎯 Vantagens 🎯")
+        print(F"{vantsort}: {vantagens[vantsort]}")
+        print("🔥💧🌿Tipo🌿💧🔥")
+        print(F"Tipagem: {tiposort}", end=" ")
+        if sectipos:
+            print(F" e {sectipos}")
+        else:
+            print()
+        print("⚔️  Estilo de Combate  ⚔️")
+        print(F"{estsort}: {estilos[estsort]}")
+        print("\n" + "=" * 50 + "\n")
+        
+        #Garante que o shiny caso seja sorteado resete seu resultado para o próximo sorteio:
+        shiny = 0
+    return tier, maxatri, Pvtotal
+'''
