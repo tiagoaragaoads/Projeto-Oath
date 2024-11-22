@@ -84,7 +84,7 @@ vantagens = {
     'Magic Bounce': 'Todos os movimentos que não são de dano que visam este Oath ou seu lado do campo de batalha terão seus efeitos redirecionados para os adversários.',
     'Magic Guard': 'Este Oath não receberá dano de Condições de Status, Recuo, Itens Segurados ou Condições Climáticas.',
     'Magician': 'Este Oath irá roubar o Item Segurado de um adversário que ele acabou de atingir com um ataque fisico não a distancia. Ele só rouba o item caso nao tenha nenhum equipado.',
-    '': '',
+    'Teste': 'Habilidade para test de COmmit no git do clã hub',
     '': '',
     '': '',
     '': '',
